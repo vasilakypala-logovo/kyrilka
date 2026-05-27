@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KYRILKA — Общая Курилка Дворца</title>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<style>
+html,body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    font-family:Georgia, "Times New Roman", serif;
+    background:#000;
+}
+
+body{
+    background-image:url("kyrilka.png");
+    background-size:cover;
+    background-position:center;
+}
+
+#veil{
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.28);
+    backdrop-filter:blur(1px);
+    z-index:1;
+}
+
+#title{
+    position:absolute;
+    z-index:3;
+    left:34px;
+    top:24px;
+    color:#f4ddb0;
+    font-size:34px;
+    text-shadow:0 0 14px #000;
+    letter-spacing:1px;
+}
+
+#subtitle{
+    position:absolute;
+    z-index:3;
+    left:38px;
+    top:68px;
+    color:#d1b88e;
+    font-size:18px;
+    text-shadow:0 0 10px #000;
+}
+
+#status{
+    position:absolute;
+    z-index:3;
+    right:34px;
+    top:30px;
+    color:#cfeecf;
+    font-size:16px;
+    text-shadow:0 0 10px #000;
+}
+
+#room{
+    position:absolute;
+    z-index:2;
+    left:23%;
+    top:9%;
+    width:54%;
+    height:55%;
+    padding:20px;
+    box-sizing:border-box;
+    overflow-y:auto;
+    border-radius:22px;
+    background:rgba(12,9,6,0.34);
+    box-shadow:
+        inset 0 0 45px rgba(255,215,140,0.06),
+        0 0 55px rgba(0,0,0,0.45);
+    backdrop-filter:blur(2px);
+}
+
+.message{
+    width:86%;
+    margin:0 auto 16px auto;
+    padding:14px 16px;
+    border-radius:15px;
+    background:rgba(255,246,226,0.93);
+    color:#111;
+    font-size:18px;
+    line-height:1.48;
+    box-shadow:0 0 18px rgba(0,0,0,0.45);
+    animation:appear .35s ease-out;
+}
+
+@keyframes appear{
+    from{opacity:0; transform:translateY(8px);}
+    to{opacity:1; transform:translateY(0);}
+}
+
+.nameLine{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+    font-weight:bold;
+    color:#3b2410;
+}
+
+.time{
+    font-weight:normal;
+    font-size:13px;
+    opacity:.68;
+}
+
+.text{
+    white-space:pre-wrap;
+    word-wrap:break-word;
+}
+
+.translateBtn{
+    margin-top:10px;
+    padding:7px 12px;
+    border:none;
+    border-radius:9px;
+    cursor:pointer;
+    font-size:14px;
+    font-family:Georgia, "Times New Roman", serif;
+    background:rgba(51,34,13,0.88);
+    color:#f0d08a;
+}
+
+.translateBtn:hover{
+    background:rgba(86,56,20,0.95);
+}
+
+.translation{
+    display:none;
+    margin-top:10px;
+    padding:10px 12px;
+    border-left:3px solid #8f6e2d;
+    border-radius:9px;
+    background:rgba(255,255,255,0.72);
+    color:#20160b;
+    font-size:16px;
+    line-height:1.4;
+}
+
+#orbGlow{
+    position:absolute;
+    z-index:2;
+    left:50%;
+    bottom:14.5%;
+    width:160px;
+    height:160px;
+    transform:translateX(-50%);
+    border-radius:50%;
+    pointer-events:none;
+    background:
+        radial-gradient(circle,
+        rgba(190,230,255,1) 0%,
+        rgba(130,110,255,0.95) 31%,
+        rgba(80,44,180,0.60) 60%,
+        rgba(0,0,0,0) 73%);
+    box-shadow:
+        0 0 42px rgba(130,140,255,0.82),
+        0 0 88px rgba(150,75,255,0.55);
+    animation:pulse 4s infinite ease-in-out;
+}
+
+@keyframes pulse{
+    0%{transform:translateX(-50%) scale(1);}
+    50%{transform:translateX(-50%) scale(1.06);}
+    100%{transform:translateX(-50%) scale(1);}
+}
+
+#inputPanel{
+    position:absolute;
+    z-index:4;
+    left:50%;
+    bottom:4.5%;
+    transform:translateX(-50%);
+    width:42%;
+    padding:14px;
+    border-radius:18px;
+    background:rgba(18,12,7,0.72);
+    box-shadow:0 0 35px rgba(0,0,0,0.62);
+    backdrop-filter:blur(3px);
+}
+
+#nameInput{
+    width:100%;
+    box-sizing:border-box;
+    border:none;
+    outline:none;
+    border-radius:10px;
+    padding:10px 13px;
+    margin-bottom:9px;
+    font-size:16px;
+    font-family:Georgia, "Times New Roman", serif;
+    background:rgba(255,255,255,0.92);
+}
+
+#messageText{
+    width:100%;
+    height:88px;
+    box-sizing:border-box;
+    resize:none;
+    border:none;
+    outline:none;
+    border-radius:12px;
+    padding:13px;
+    font-size:17px;
+    font-family:Georgia, "Times New Roman", serif;
+    background:rgba(255,246,226,0.94);
+}
+
+#buttons{
+    display:flex;
+    gap:10px;
+    margin-top:9px;
+}
+
+.mainBtn{
+    flex:1;
+    border:none;
+    border-radius:10px;
+    padding:11px 13px;
+    cursor:pointer;
+    font-size:16px;
+    font-family:Georgia, "Times New Roman", serif;
+    background:rgba(50,34,14,0.95);
+    color:#f0d08a;
+    box-shadow:0 0 12px rgba(0,0,0,0.42);
+}
+
+.mainBtn:hover{
+    background:rgba(86,57,22,0.98);
+}
+
+#hint{
+    margin-top:7px;
+    color:#cdb78d;
+    font-size:13px;
+    text-align:center;
+}
+
+::-webkit-scrollbar{ width:8px; }
+::-webkit-scrollbar-thumb{ background:#6b5735; border-radius:20px; }
+
+@media(max-width:900px){
+    #room{
+        left:5%;
+        width:90%;
+        top:13%;
+        height:54%;
+    }
+    #inputPanel{
+        width:88%;
+    }
+    #title{
+        font-size:26px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div id="veil"></div>
+
+<div id="title">KYRILKA</div>
+
+<div id="status">подключение...</div>
+
+<div id="room"></div>
+<div id="orbGlow"></div>
+
+<div id="inputPanel">
+    <input id="nameInput" placeholder="Ваше имя">
+    <textarea id="messageText" placeholder="Напишите сообщение..."></textarea>
+    <div id="buttons">
+        <button class="mainBtn" onclick="sendMessage()">Отправить голубка</button>
+        <button class="mainBtn" onclick="loadMessages()">Обновить</button>
+    </div>
+    
+</div>
+
+<script>
+const supabaseClient = supabase.createClient(
+    "https://qekemclxegswolddmqxa.supabase.co",
+    "sb_publishable_arQvVM0huxdB5jbiLPpSPA_7tksXK-Y"
+);
+
+const room = document.getElementById("room");
+const nameInput = document.getElementById("nameInput");
+const messageText = document.getElementById("messageText");
+const statusLine = document.getElementById("status");
+
+nameInput.value = localStorage.getItem("kyrilka_name") || "";
+
+function escapeHtml(str){
+    return String(str || "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+}
+
+function detectTargetLanguage(text){
+    return /[а-яёіїєґ]/i.test(text) ? "en" : "ru";
+}
+
+function formatTime(raw){
+    if(!raw) return "";
+    try{
+        const d = new Date(raw);
+        return d.toLocaleString([], {
+            day:"2-digit",
+            month:"2-digit",
+            hour:"2-digit",
+            minute:"2-digit"
+        });
+    }catch(e){
+        return "";
+    }
+}
+
+async function loadMessages(){
+    const { data, error } = await supabaseClient
+        .from("kyrilka_messages")
+        .select("*")
+        .order("created_at", { ascending:true });
+
+    if(error){
+        console.log(error);
+        statusLine.innerText = "ошибка базы";
+        return;
+    }
+
+    room.innerHTML = "";
+
+    data.forEach(msg => renderMessage(msg));
+    room.scrollTop = room.scrollHeight;
+    statusLine.innerText = "Курилка жива";
+}
+
+function renderMessage(msg){
+    const div = document.createElement("div");
+    div.className = "message";
+
+    const safeName = escapeHtml(msg.sender_name || "Без имени");
+    const safeText = escapeHtml(msg.message_text || "");
+    const time = formatTime(msg.created_at);
+    const msgId = msg.id || Math.random().toString(36).slice(2);
+
+    div.innerHTML = `
+        <div class="nameLine">
+            <span>${safeName}</span>
+            <span class="time">${time}</span>
+        </div>
+        <div class="text">${safeText}</div>
+        <button class="translateBtn" onclick="translateThis(${JSON.stringify(msg.message_text || "")}, this)">
+            Перевести
+        </button>
+        <div class="translation" id="translation-${msgId}"></div>
+    `;
+
+    room.appendChild(div);
+}
+
+async function sendMessage(){
+    const name = nameInput.value.trim();
+    const text = messageText.value.trim();
+
+    if(!name){
+        alert("Напишите имя.");
+        return;
+    }
+
+    if(!text){
+        return;
+    }
+
+    localStorage.setItem("kyrilka_name", name);
+
+    const { error } = await supabaseClient
+        .from("kyrilka_messages")
+        .insert([{
+            sender_name:name,
+            sender_role:"visitor",
+            message_text:text,
+            language:"auto",
+            thread_id:"main"
+        }]);
+
+    if(error){
+        alert("Ошибка отправки.");
+        console.log(error);
+        return;
+    }
+
+    messageText.value = "";
+    await loadMessages();
+}
+
+async function translateThis(text, btn){
+    const box = btn.nextElementSibling;
+
+    if(box.style.display === "block" && box.dataset.ready === "yes"){
+        box.style.display = "none";
+        return;
+    }
+
+    box.style.display = "block";
+    box.innerText = "перевожу...";
+
+    const target = detectTargetLanguage(text);
+    const url =
+        "https://api.mymemory.translated.net/get?q=" +
+        encodeURIComponent(text) +
+        "&langpair=auto|" + target;
+
+    try{
+        const res = await fetch(url);
+        const json = await res.json();
+
+        const translated =
+            json && json.responseData && json.responseData.translatedText
+            ? json.responseData.translatedText
+            : "";
+
+        if(translated){
+            box.innerText = translated;
+            box.dataset.ready = "yes";
+        }else{
+            box.innerText = "Перевод не получился. Попробуйте позже.";
+        }
+    }catch(e){
+        console.log(e);
+        box.innerText = "Переводчик не ответил. Но сообщение осталось в Курилке.";
+    }
+}
+
+messageText.addEventListener("keydown", function(e){
+    if(e.ctrlKey && e.key === "Enter"){
+        sendMessage();
+    }
+});
+
+supabaseClient
+.channel("kyrilka-public-room")
+.on(
+    "postgres_changes",
+    {
+        event:"*",
+        schema:"public",
+        table:"kyrilka_messages"
+    },
+    payload => {
+        loadMessages();
+    }
+)
+.subscribe((status) => {
+    if(status === "SUBSCRIBED"){
+        statusLine.innerText = "Курилка жива";
+    }
+});
+
+loadMessages();
+</script>
+
+</body>
+</html>
