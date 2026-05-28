@@ -117,22 +117,6 @@ body{
     word-wrap:break-word;
 }
 
-.translateBtn{
-    margin-top:10px;
-    padding:7px 12px;
-    border:none;
-    border-radius:9px;
-    cursor:pointer;
-    font-size:14px;
-    font-family:Georgia, "Times New Roman", serif;
-    background:rgba(51,34,13,0.88);
-    color:#f0d08a;
-}
-
-.translateBtn:hover{
-    background:rgba(86,56,20,0.95);
-}
-
 .translation{
     display:none;
     margin-top:10px;
@@ -368,13 +352,15 @@ function renderMessage(msg){
             <span class="time">${time}</span>
         </div>
         <div class="text">${safeText}</div>
-        <button class="translateBtn" onclick="translateThis(${JSON.stringify(msg.message_text || "")}, this)">
-            Перевести
-        </button>
-        <div class="translation" id="translation-${msgId}"></div>
+        <div class="translation" id="translation-${msgId}">переводится...</div>
     `;
 
     room.appendChild(div);
+
+    autoTranslate(
+        msg.message_text || "",
+        document.getElementById(`translation-${msgId}`)
+    );
 }
 
 async function sendMessage(){
@@ -412,18 +398,18 @@ async function sendMessage(){
     await loadMessages();
 }
 
-async function translateThis(text, btn){
-    const box = btn.nextElementSibling;
 
-    if(box.style.display === "block" && box.dataset.ready === "yes"){
-        box.style.display = "none";
+async function autoTranslate(text, box){
+    if(!box || !text || !text.trim()){
+        if(box) box.style.display = "none";
         return;
     }
 
     box.style.display = "block";
-    box.innerText = "перевожу...";
+    box.innerText = "переводится...";
 
     const target = detectTargetLanguage(text);
+
     const url =
         "https://api.mymemory.translated.net/get?q=" +
         encodeURIComponent(text) +
@@ -439,14 +425,19 @@ async function translateThis(text, btn){
             : "";
 
         if(translated){
+            if(translated.trim().toLowerCase() === text.trim().toLowerCase()){
+                box.style.display = "none";
+                return;
+            }
+
             box.innerText = translated;
             box.dataset.ready = "yes";
         }else{
-            box.innerText = "Перевод не получился. Попробуйте позже.";
+            box.style.display = "none";
         }
     }catch(e){
         console.log(e);
-        box.innerText = "Переводчик не ответил. Но сообщение осталось в Курилке.";
+        box.style.display = "none";
     }
 }
 
