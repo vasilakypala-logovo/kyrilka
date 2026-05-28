@@ -254,6 +254,25 @@ body{
     }
 }
 </style>
+
+<script>
+/* РАСКРЫТИЕ ОКНА КУРИЛКИ НА ВЕСЬ ЭКРАН БРАУЗЕРА */
+function expandKyrilkaWindow(){
+    try{
+        if(window.opener){
+            window.moveTo(0,0);
+            window.resizeTo(screen.availWidth, screen.availHeight);
+            window.focus();
+        }
+    }catch(e){
+        console.log("Kyrilka resize blocked:", e);
+    }
+}
+
+window.addEventListener("load", expandKyrilkaWindow);
+document.addEventListener("click", expandKyrilkaWindow, {once:true});
+</script>
+
 </head>
 
 <body>
