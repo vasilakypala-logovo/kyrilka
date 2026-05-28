@@ -279,7 +279,7 @@ body{
     <input id="nameInput" placeholder="Ваше имя">
     <textarea id="messageText" placeholder="Напишите сообщение..."></textarea>
     <div id="buttons">
-        <button class="mainBtn" onclick="sendMessage()">Отправить голубка</button>
+        <button class="mainBtn" onclick="sendMessage()">Отправить</button>
         <button class="mainBtn" onclick="loadMessages()">Обновить</button>
     </div>
     
@@ -463,7 +463,7 @@ supabaseClient
 )
 .subscribe((status) => {
     if(status === "SUBSCRIBED"){
-        statusLine.innerText = "Курилка жива";
+        statusLine.innerText = "evening prime time";
     }
 });
 
