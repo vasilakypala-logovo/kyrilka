@@ -299,6 +299,14 @@ function escapeHtml(str){
         .replaceAll("'","&#039;");
 }
 
+function detectLanguagePair(text){
+    /* MyMemory не принимает auto как исходный язык.
+       Поэтому определяем направление сами:
+       кириллица -> русский/украинский текст переводим на английский,
+       латиница -> английский текст переводим на русский. */
+    return /[а-яёіїєґ]/i.test(text) ? "ru|en" : "en|ru";
+}
+
 function detectTargetLanguage(text){
     return /[а-яёіїєґ]/i.test(text) ? "en" : "ru";
 }
@@ -408,12 +416,12 @@ async function autoTranslate(text, box){
     box.style.display = "block";
     box.innerText = "переводится...";
 
-    const target = detectTargetLanguage(text);
+    const langpair = detectLanguagePair(text);
 
     const url =
         "https://api.mymemory.translated.net/get?q=" +
         encodeURIComponent(text) +
-        "&langpair=auto|" + target;
+        "&langpair=" + langpair;
 
     try{
         const res = await fetch(url);
