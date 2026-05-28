@@ -272,7 +272,7 @@ body{
     <textarea id="messageText" placeholder="Напишите сообщение..."></textarea>
     <div id="buttons">
         <button class="mainBtn" onclick="sendMessage()">Отправить</button>
-        <button class="mainBtn" onclick="loadMessages()">Обновить</button>
+        <button class="mainBtn" onclick="closeLounge()">EXIT LOUNGE</button>
     </div>
     
 </div>
@@ -289,6 +289,18 @@ const messageText = document.getElementById("messageText");
 const statusLine = document.getElementById("status");
 
 nameInput.value = localStorage.getItem("kyrilka_name") || "";
+    function closeLounge(){
+
+    if(window.opener){
+
+        window.close();
+
+    }else{
+
+        history.back();
+
+    }
+}
 
 function escapeHtml(str){
     return String(str || "")
