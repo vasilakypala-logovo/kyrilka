@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KYRILKA — Общая Курилка Дворца</title>
+<title>NEX </title>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
@@ -73,11 +73,10 @@ body{
     box-sizing:border-box;
     overflow-y:auto;
     border-radius:22px;
-    background:rgba(12,9,6,0.34);
-    box-shadow:
-        inset 0 0 45px rgba(255,215,140,0.06),
-        0 0 55px rgba(0,0,0,0.45);
-    backdrop-filter:blur(2px);
+
+    background:transparent;
+    box-shadow:none;
+    backdrop-filter:none;
 }
 
 .message{
@@ -343,7 +342,7 @@ async function loadMessages(){
 
     data.forEach(msg => renderMessage(msg));
     room.scrollTop = room.scrollHeight;
-    statusLine.innerText = "Курилка жива";
+    statusLine.innerText = "evening prime time";
 }
 
 function renderMessage(msg){
