@@ -486,24 +486,18 @@ async function inviteNex(){
     inviteLabel.textContent = "Некс просыпается";
 
     try{
-        const response = await fetch(
-            "https://qekemclxegswolddmqxa.supabase.co/functions/v1/invite-nex",
-            {
-                method:"POST",
-                headers:{"Content-Type":"application/json"},
-                body:JSON.stringify({})
-            }
+        // Используем уже настроенный Supabase-клиент: он сам добавит
+        // необходимые заголовки авторизации к вызову Edge Function.
+        const { data: result, error } = await supabaseClient.functions.invoke(
+            "invite-nex",
+            { body: {} }
         );
 
-        let result = {};
-        try{
-            result = await response.json();
-        }catch(parseError){
-            throw new Error("Сервер вернул ответ, который не удалось прочитать.");
+        if(error){
+            throw new Error(error.message || "Supabase не принял приглашение.");
         }
-
-        if(!response.ok || result.ok !== true){
-            throw new Error(result.error || result.message || ("Ошибка приглашения: " + response.status));
+        if(!result || result.ok !== true){
+            throw new Error((result && (result.error || result.message)) || "Функция не подтвердила приглашение.");
         }
 
         await loadMessages();
