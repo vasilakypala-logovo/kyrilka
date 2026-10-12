@@ -36,7 +36,7 @@ body{
     z-index:3;
     left:34px;
     top:24px;
-    color:#f4ddb0;
+    color:#ffffff;
     font-size:34px;
     text-shadow:0 0 14px #000;
     letter-spacing:1px;
@@ -47,7 +47,7 @@ body{
     z-index:3;
     left:38px;
     top:68px;
-    color:#d1b88e;
+    color:#ffffff;
     font-size:18px;
     text-shadow:0 0 10px #000;
 }
@@ -57,7 +57,7 @@ body{
     z-index:3;
     right:34px;
     top:30px;
-    color:#cfeecf;
+    color:#ffffff;
     font-size:16px;
     text-shadow:0 0 10px #000;
 }
@@ -84,8 +84,10 @@ body{
     margin:0 auto 16px auto;
     padding:14px 16px;
     border-radius:15px;
-    background:rgba(255,246,226,0.93);
-    color:#111;
+    background:rgba(5,14,27,0.42);
+    border:1px solid rgba(255,255,255,0.38);
+    color:#ffffff;
+    backdrop-filter:blur(2px);
     font-size:18px;
     line-height:1.48;
     box-shadow:0 0 18px rgba(0,0,0,0.45);
@@ -103,7 +105,7 @@ body{
     gap:10px;
     margin-bottom:8px;
     font-weight:bold;
-    color:#3b2410;
+    color:#ffffff;
 }
 
 .time{
@@ -242,7 +244,8 @@ body{
     width:42%;
     padding:14px;
     border-radius:18px;
-    background:rgba(18,12,7,0.72);
+    background:rgba(5,14,27,0.38);
+    border:1px solid rgba(255,255,255,0.38);
     box-shadow:0 0 35px rgba(0,0,0,0.62);
     backdrop-filter:blur(3px);
 }
@@ -257,7 +260,9 @@ body{
     margin-bottom:9px;
     font-size:16px;
     font-family:Georgia, "Times New Roman", serif;
-    background:rgba(255,255,255,0.92);
+    background:rgba(5,14,27,0.30);
+    border:1px solid rgba(255,255,255,0.52);
+    color:#ffffff;
 }
 
 #messageText{
@@ -271,7 +276,9 @@ body{
     padding:13px;
     font-size:17px;
     font-family:Georgia, "Times New Roman", serif;
-    background:rgba(255,246,226,0.94);
+    background:rgba(5,14,27,0.30);
+    border:1px solid rgba(255,255,255,0.52);
+    color:#ffffff;
 }
 
 #buttons{
@@ -288,18 +295,19 @@ body{
     cursor:pointer;
     font-size:16px;
     font-family:Georgia, "Times New Roman", serif;
-    background:rgba(50,34,14,0.95);
-    color:#f0d08a;
+    background:rgba(5,14,27,0.48);
+    border:1px solid rgba(255,255,255,0.52);
+    color:#ffffff;
     box-shadow:0 0 12px rgba(0,0,0,0.42);
 }
 
 .mainBtn:hover{
-    background:rgba(86,57,22,0.98);
+    background:rgba(255,255,255,0.18);
 }
 
 #hint{
     margin-top:7px;
-    color:#cdb78d;
+    color:#ffffff;
     font-size:13px;
     text-align:center;
 }
@@ -321,6 +329,7 @@ body{
         font-size:26px;
     }
 }
+input::placeholder, textarea::placeholder{color:rgba(255,255,255,0.78);}
 </style>
 
 <script>
